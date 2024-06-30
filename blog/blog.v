@@ -1,14 +1,19 @@
 module main
 
+import db.sqlite
 import vweb
 import time
 
 struct App {
 	vweb.Context
+pub mut:
+	db sqlite.DB
 }
 
 fn main(){
-	app := App{}
+	mut app := App{
+		db: sqlite.connect(':memory:')!
+	}
 	vweb.run(app, 8081)
 }
 
