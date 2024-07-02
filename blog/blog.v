@@ -26,11 +26,21 @@ pub fn (mut app App) index() vweb.Result {
 fn (mut app App) time() vweb.Result {
 	return app.text(time.now().format())
 }
-
+	
 @[post]
 pub fn (mut app App) new_article(title string. text string) vweb.Result {
 	if title == '' || text == '' {
 		return app.text("empty text/title")
 	}
+
+	article := Article{
+			title: title
+			text: text
+	}
+
+	sql app.db {
+		insert article into Article
+	} or { panic(err) }
+
 	return app.redirect("/")
 }
