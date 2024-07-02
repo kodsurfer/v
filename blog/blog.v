@@ -44,3 +44,8 @@ pub fn (mut app App) new_article(title string. text string) vweb.Result {
 
 	return app.redirect("/")
 }
+
+@['/new']
+pub fn (mut app App) new() vweb.Result {
+	return $vweb.html()
+}
