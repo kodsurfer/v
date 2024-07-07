@@ -12,23 +12,43 @@ pub mut:
 
 fn main(){
 	mut app := App{
-		db: sqlite.connect(':memory:')!
+		db: sqlite.connect('blog.db')!
 	}
+
+	sql app.db {
+		create table Article
+	}!
+
+	article1 := Article{
+		title: 'Hello World'
+		text: 'V is great'
+	}
+
+	article2 := Article{
+		title: 'Second post'
+		text: 'What should be the next?'
+	}
+	
+	sql app.db {
+		insert article1 into Article
+		insert article2 into Article
+	}!
 	vweb.run(app, 8081)
 }
 
 @['/index']
 pub fn (mut app App) index() vweb.Result {
-	msg := 'Hello world from vweb!'
+	articles := app.find_all_articles()
 	return $vweb.html()
 }
 
 fn (mut app App) time() vweb.Result {
 	return app.text(time.now().format())
 }
-	
+
+
 @[post]
-pub fn (mut app App) new_article(title string. text string) vweb.Result {
+pub fn (mut app App) new_article(title string, text string) vweb.Result {
 	if title == '' || text == '' {
 		return app.text("empty text/title")
 	}
